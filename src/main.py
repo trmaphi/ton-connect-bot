@@ -70,7 +70,7 @@ async def send_transaction(message: Message):
     try:
         await asyncio.wait_for(connector.send_transaction(
             transaction=transaction
-        ), 3)
+        ), 300)
     except asyncio.TimeoutError:
         await message.answer(text='Timeout error!')
     except pytonconnect.exceptions.UserRejectsError:
