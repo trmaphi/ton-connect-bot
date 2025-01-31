@@ -13,7 +13,8 @@ import config
 from messages import get_comment_message
 from connector import get_connector
 
-from aiogram import Bot, Dispatcher, F
+from aiogram import Bot, Dispatcher
+from aiogram.client.bot import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery, BufferedInputFile
@@ -21,9 +22,8 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
 logger = logging.getLogger(__file__)
-
 dp = Dispatcher()
-bot = Bot(config.TOKEN, parse_mode=ParseMode.HTML)
+bot = Bot(token=config.TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
 
 @dp.message(CommandStart())
@@ -58,6 +58,7 @@ async def send_transaction(message: Message):
         'valid_until': int(time.time() + 3600),
         'messages': [
             get_comment_message(
+                # https://tonviewer.com/EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c
                 destination_address='0:0000000000000000000000000000000000000000000000000000000000000000',
                 amount=int(0.01 * 10 ** 9),
                 comment='hello world!'
@@ -69,7 +70,7 @@ async def send_transaction(message: Message):
     try:
         await asyncio.wait_for(connector.send_transaction(
             transaction=transaction
-        ), 300)
+        ), 3)
     except asyncio.TimeoutError:
         await message.answer(text='Timeout error!')
     except pytonconnect.exceptions.UserRejectsError:
@@ -144,7 +145,7 @@ async def main_callback_handler(call: CallbackQuery):
 
 
 async def main() -> None:
-    await bot.delete_webhook(drop_pending_updates=True)  # skip_updates = True
+    # await bot.delete_webhook(drop_pending_updates=True)  # skip_updates = True
     await dp.start_polling(bot)
 
 

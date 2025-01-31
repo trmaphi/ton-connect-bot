@@ -8,11 +8,14 @@ The running public instance can be found at https://t.me/test_tonconnect_bot
 ### Redis
 If you want to use permanent TON Connect storage you should [set up Redis](https://redis.io/docs/getting-started/) or any other database.
 
+```
+docker compose up -d
+```
 
 ### Install dependencies:
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
 ### Set up `.env`:
@@ -25,5 +28,5 @@ MANIFEST_URL='https://raw.githubusercontent.com/XaBbl4/pytonconnect/main/pytonco
 ### Run bot
 
 ```python
-python3 src/main.py
+python src/main.py
 ```
